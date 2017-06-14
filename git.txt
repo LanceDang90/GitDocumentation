@@ -1,0 +1,393 @@
+http://git-scm.com
+http://git-scm.com/download/mac
+
+git --version   : checking the version 
+which git 		: where git located
+
+git config --system		: system config file
+git config --global	user.name "Lance Dang"	: create config file for an user
+git config --global user.email "someone@nowhere.com"
+
+// create global ignore files for all the repositories
+nano .gitignore_global
+git config --global core.excludesfile ~/.gitignore_global
+
+git config --list		: list out all the users
+cat .gitconfig			: list the users (name, email)
+git config user.name	: print out all the users' name
+git config user.email
+git config				: project config file
+
+git config --global core.editor "subl -wl1"	: tell git what text editor you want 											
+												to use, -w (wait), l1 (start at line 1)
+git config --global color.ui true		: tell git to use the different color
+
+
+
+// Add auto-completion
+cd ~
+curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash -o ~/.git-completion.bash
+ls -la : list all the files (include the hidden files)
+//mv ~/git-completion.bash ~/.git-completion.bash 
+ls -la
+nano .bash_profile
+// inside
+// export PS1="Lance$ "
+// alias ll='ls -lahG'
+if [ -f ~/.git-completion.bash ]; then
+	. ~/.git-completion.bash
+	// source ~/.git-completion.bash
+fi
+
+
+
+
+git help 	: list all the helpful commands
+git help <command> 	: description of a specific command
+git help log = man git-log
+f : forward
+b : backward
+q : quit
+
+
+
+git init 	: initialize a new project in this directory
+
+ls -la .git : check the files inside the hidden .git file
+
+git add . 	: add all the files inside this repository
+git commit -m "message" 	: put in permanent of this repository
+// git commit -am "message" 	: same as two commands above
+									should use only for modified:
+
+// message can contain
+- "[css, js] "
+- "bugfix: "
+- "#38405 - " 	: ticket tracking number
+
+git log 	: (view commits) show the log of all the commits we have taken so far
+			: showing the commit ID, author of the commit, and the date, message
+git log -n 1,3,2 	: limit number of commits it return to us
+git log --since=2012-06-15 
+git log --since="2 weeks ago" --until="2 days ago"
+git log --unitl=2012-06-15
+git log --oneline	: everything in one line
+git log --format=oneline
+git log --format=short
+git log --format=full
+git log 2802abd0..b289v278 --oneline 	: from this 2802abd commit to b289v278
+git log 2802abd0..
+git log 2802abd0.. <specific_file> 	: find out with happen to a specific file
+git log-p 2802abd-0.. <specific_file> : see what is the different
+git log --stat --summary
+git log --author="Lance"
+git log --grep="init"	: matching a short text in the commit message
+git show 2802abd0 	: show detail changing 
+git show --format=oneline HEAD~2
+
+
+working --- staging index --- repository
+		(add)			 (commit)
+
+git log HEAD 	: pointer going to the tip of current branch
+
+git status 		: report back to us the different between 3 stage
+					(working, staging index, repository)
+
+git diff 		: report the different of the same file in the 
+					repository and the working directory
+
+git diff --staged 	: compare the different of the same file in
+					repository and the staging index
+git diff <file_name>
+git diff --color-words <file_name>
+git diff 2802abd
+git diff 2802abd..6f33a1e
+git diff --stat --summary 6f33a1e..HEAD
+
+
+git rm <file_name> 	: delete the file_name from repository
+git status
+git commit -m "message of the delete"
+
+git mv <old_name> <new_name> 		: rename the file's name
+git mv <file> new_location/<file> 	: move to a new location
+git commit -m "message of rename or move the file"
+
+
+git checkout -- <file_name>  	: undo changes to the working directory
+									-- stay on the current branch
+
+git reset HEAD <file_name> 		: undo changes to the staging index
+
+
+git commit --amend -m "message"	: undo changes to the last commit in repository
+
+git checkout 92046d60ae2 -- <file_name> 	: retrieving old version of a file
+
+git reset HEAD <file_name>	: bring back the file from staging index back to working directory
+git checkout -- <file_name>
+
+git revert 6f33a1ee0b447713859    : revert the change
+// pop up text editor, save the change and close it
+
+git reset --soft a9cbfae3f66f8	: does not change staging index or working directory
+git reset --mixed a9cbfae3f66f8	: changes staging index to match repository
+									does not change working directory
+git reset --hard a9cbfae3f66f8	: changes staging index and working directory to 
+									match repository
+
+(can save all the log ID and reset back)
+
+
+
+git clean -n 
+git clean -f 	: clean all the files in working directory
+// if the file in staging index 
+git reset HEAD <file_name> 	: bring back the file from staging index back to working directory
+git clean -f
+
+
+// create an directory project/.gitignore
+nano .gitignore 
+//save all the file you want to ignore in it
+// basic regular expressions
+*.txt 	: any file with dot (.) txt
+? [aeiou] [0-9]
+// negate expressions with !
+*.php
+!index.php
+// ignore all files in a directory with trailing slash
+assets/videos/
+// comment lines begins with #, blank lines are skipped
+
+// files should be store in ignore directory
+.	compiled source code
+.	packages and compressed files
+.	logs and databases
+.	operating system generated files
+.	user-uploaded assets (images, PDFs, videos)
+.  	https://help.github.com/articles/ignoring-files
+.	https://github.com/github/gitignore
+
+// want to untrack a file after commit to repository
+git rm --cached <file_name> 	: remove from staging index
+								(after move it to .gitignore)
+
+// Git does not track an empty directory, so
+// we usually create an empty file to let git keep track
+// of the directory
+touch <path to the directory>/.gitkeep	: create an file .gitkeep
+
+
+
+
+
+Commit Tree-Referencing
+. Parent commit 
+	- HEAD^, acf87504^, master^
+	- HEAD~1 , HEAD~
+. Grandparent commit
+	- HEAD^^, acf87504^^, master^^
+	- HEAD~2
+. Great-grandparent commit
+	- HEAD^^^, acf87504^^^, master^^^
+	- HEAD~3
+
+// list all the commit (log) run like a tree
+git help ls-tree
+git ls-tree HEAD
+git ls-tree master 
+git ls-tree master assets/
+git ls-tree master^ assets/
+git ls-tree acf87504
+// blod : file
+// tree : directory
+
+
+
+git branch 		: check to see the current branch
+git branch <branch_name> 	: create a new branch
+git checkout -b <branch_name> : create and switch to <branch_name> 
+git ls -la .git/refs/heads	: check how many branch for this project
+git checkout <branch_name> 	: switch to the branch
+// cannot switch to a branch if we modify some existing files
+// can switch if just create a new file
+git log --graph --oneline --decorate --all : see all the log of all branches
+git diff master..new_feature : compare the change between two branch
+git diff --color-words master..new_feature
+
+git branch --merged : 	merge all the commit to the current branch
+git branch -m new_feature brand_new : rename the branch
+git branch -d <branch_name> 	: delete the branch
+
+
+
+__git_ps1 	: showing the current branch as prompt in a git repo
+echo $PS1 	: showing the prompt
+export PS1='>>>>>'  	: create a new prompt
+export PS1='\W$(__git_ps1 "(%s)") >>> '
+
+
+checkout <receive_branch> 		: 	checkout the receive branch
+git merge <giving_branch> 		: 	merge from giving_branch
+git merge --no-ff <giving_branch> : merge anyway, no need for fast forward
+git merge --ff-only <giving_branch> : merge fast forward only
+
+git merge --abort 	: aborting the merge
+
+
+
+
+git stash save "message"	: put the change in the stash
+git stash list	: show all the stashes
+git stash show <stash@{0}> 	: show the specific stash <stash@{0}>
+git stash show -p <stash@{0}> 	: show the set of change (commit)
+
+git stash apply <stash@{0}> : pull item from the stash to the working directory
+				 and leave a copy in stash
+git stash pop <stash@{0}> 	: (not leave a copy in stash)
+git stash drop <stash@{0}> 	: delete <stash@{0}> item
+git stash clear		: clear out for whole stash
+
+
+
+
+
+				-----------------------------			
+				|							|
+remote server   |	master					|
+				|							|
+				-----------------------------
+			 ^
+		push |      							|	fetch  |
+
+				-----------------------------			
+				|	origin/master			|
+my computer	    |					(merge)	|
+				|	master					|
+				-----------------------------
+
+
+git remote 		: list all the remote
+git remote -v 	: more information
+// add to the remote from the local repo
+git remote add <alias> <url>
+git remote add origin https://github.com/lancedang90/explore_california.git
+cat .git/config
+git remote rm <alias>
+git remote rm origin 	: remove the remote
+git push -u <alias> <branch>
+git push -u origin master 	: push to the remote
+// if we don't have -u oftion, will be non-tracking branch
+git branch --set-upstream <branch_to_track> origin/<branch_to_track>
+ls -la .git/refs/remotes/origin
+cat .git/refs/remotes/origin/master
+git branch -r 	: showing remote branches
+git branch -a 	: showing both the remote and local one
+
+// If we pull the skeleton from the remote
+git clone https://github.com/lancedang90/explore_california.git
+// will create a directory named explore_california
+git clone https://github.com/lancedang90/explore_california.git new_directory
+// will create a directory named "new_directory" and store the skeleton code in it
+
+git fetch origin
+git merge origin/master : when we are on the receiving the branch
+git pull = git fetch + git merge
+
+
+git branch non_tracking origin/non_tracking : create a new branch named non_tracking
+												start from origin
+git branch -b non_tracking origin/non_tracking 
+
+
+// If we can not push, we need to fetch, merge, and push it again
+
+
+git push origin :non_tracking 	: delete a branch on the remote server
+git push origin --delete non_tracking	: same command as above
+
+
+
+
+
+cat ../../.gitconfig
+ls -la ../..
+
+
+
+
+ALIASES:
+git config --global alias.st "status"
+git config --global alias.co checkout
+git config --global alias.ci commit
+git config --global alias.br branch
+git config --global alias.df diff
+git config --global alias.dfs "diff --staged"
+git config --global alias.logg "log --graph --decorate --oneline --abbrev-commit --all"
+
+
+
+
+
+Git Web:
+	https://git.wiki.kernel.org/index.php/Gitweb
+
+Graphical User Interfaces for Mac
+. GitX		: http://gitx.org
+. GitHub 	: http://mac.github.com
+. SourceTree: http://sourcetreeapp.com
+. Tower		: http://git-tower.com
+. SmartGit	: http://syntevo.com/smartgit
+. Gitbox	: http://gitboxapp.com
+
+
+
+Git Self-Hosting
+. Gitosis 	: http://github.com/tv42/gitosis
+. Gitolite 	: http://github.com/sitaramc/gitolite
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
